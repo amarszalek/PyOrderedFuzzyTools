@@ -8,5 +8,5 @@ setup(
     license='',
     author='amarszalek',
     author_email='amarszalek@pk.edu.pl',
-    description='Python package for Ordered Fuzzy Numbers '
+    description='Python package for Ordered Fuzzy Numbers'
 )

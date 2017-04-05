@@ -2,7 +2,6 @@ pyorderedfuzzy
 ==============
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
-Package for Ordered Fuzzy Numbers calculus
 
 Python package for Ordered Fuzzy Numbers
 
@@ -13,5 +12,5 @@ To get started, clone the repository, cd into the new directory, and install usi
 
 ```
 git clone https://github.com/amarszalek/PyOrderedFuzzyTools.git
-python PyOrderedFuzzyTools/setup.py install
+python setup.py install
 ```

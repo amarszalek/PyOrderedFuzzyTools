@@ -202,7 +202,7 @@ class Branch(object):
         if alpha in self.domain_x:
             dom = self.domain_x.tolist()
             indx = dom.index(alpha)
-            return self.fvalue_y[indx]
+            return np.min(self.fvalue_y[indx:]), np.max(self.fvalue_y[indx:])
         elif alpha < 0.0 or alpha > 1.0:
             raise ValueError('alpha must be value between 0.0 and 1.0')
         else:
@@ -213,7 +213,10 @@ class Branch(object):
                     fp = self.fvalue_y[i - 1]
                     fk = self.fvalue_y[i]
                     factor = (alpha - xp) / (xk - xp)
-                    return factor * fk + (1 - factor) * fp
+                    vmin = np.min(self.fvalue_y[i:])
+                    vmax = np.max(self.fvalue_y[i:])
+                    y = factor * fk + (1 - factor) * fp
+                    return np.min([y, vmin]), np.max([y, vmax])
 
     # to string method
     def __str__(self):

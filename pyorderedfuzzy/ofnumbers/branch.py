@@ -219,6 +219,15 @@ class Branch(object):
     def __str__(self):
         return "\tdim: \t{0}\n\tdomain_x: {1}\n\tfvalue_y: {2}".format(self.dim, self.domain_x, self.fvalue_y)
 
+    # plot method
+    def plot_branch(self, ax, plot_as='ordered', *args, **kwargs):
+        if plot_as == 'ordered':
+            ax.plot(self.domain_x, self.fvalue_y, *args, **kwargs)
+        elif plot_as == 'classic':
+            ax.plot(self.fvalue_y, self.domain_x, *args, **kwargs)
+        else:
+            raise ValueError('plot_as must be ordered or classic')
+
 
 # methods
 # initialize branch of linear type y = a * x + b

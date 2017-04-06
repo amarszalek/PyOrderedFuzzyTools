@@ -355,8 +355,14 @@ def fexp(ofn):
 
 def fpower(ofn, p):
     res = ofn.copy()
-    res.branch_f = branch.fpower(res.branch_f, p)
-    res.branch_g = branch.fpower(res.branch_g, p)
+    if isinstance(p, OFNumber):
+        res.branch_f = branch.fpower(res.branch_f, p.branch_f)
+        res.branch_g = branch.fpower(res.branch_g, p.branch_g)
+    elif isscalar(p):
+        res.branch_f = branch.fpower(res.branch_f, p)
+        res.branch_g = branch.fpower(res.branch_g, p)
+    else:
+        raise ValueError('p must be instance of OFNumber class or scalar')
     return res
 
 

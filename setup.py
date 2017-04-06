@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='pyorderedfuzzy',
     version='0.0.1',
-    packages=['pyorderedfuzzy', 'pyorderedfuzzy.ofnumbers'],
+    packages=['pyorderedfuzzy', 'pyorderedfuzzy.ofnumbers', 'pyorderedfuzzy.ofcandles'],
     url='',
     license='',
     author='amarszalek',

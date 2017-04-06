@@ -242,6 +242,11 @@ class OFNumber(object):
     def __str__(self):
         return "branch_f:\n{0}\nbranch_g:\n{1}".format(self.branch_f, self.branch_g)
 
+    def to_array(self):
+        f = self.branch_f.to_array()
+        g = self.branch_g.to_array()
+        return np.concatenate((f, g))
+
     def acut(self, alpha):
         fmin, fmax = self.branch_f.acut(alpha)
         gmin, gmax = self.branch_g.acut(alpha)

@@ -197,6 +197,9 @@ class Branch(object):
         else:
             raise ValueError('val must be instance of Branch class or scalar')
 
+    def to_array(self):
+        return copy.deepcopy(self.fvalue_y)
+
     # alpha-cut method
     def acut(self, alpha):
         if alpha in self.domain_x:

@@ -62,8 +62,8 @@ class OFCandle(OFNumber):
 
         ymax = np.max([np.max(self.price), self.branch_f.fvalue_y[0], self.branch_g.fvalue_y[0]])
         ymin = np.min([np.min(self.price), self.branch_f.fvalue_y[0], self.branch_g.fvalue_y[0]])
-        ymax = ymax * 1.1
-        ymin = ymin * 0.9
+        ymax = ymax + (ymax-ymin)*0.1
+        ymin = ymin - (ymax-ymin)*0.1
         s1, s2 = self.param_s
 
         ax1.plot(self.price, 'k-', label='price (Bid)')

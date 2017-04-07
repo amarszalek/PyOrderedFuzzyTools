@@ -62,17 +62,22 @@ class OFCandle(OFNumber):
 
         ymax = np.max([np.max(self.price), self.branch_f.fvalue_y[0], self.branch_g.fvalue_y[0]])
         ymin = np.min([np.min(self.price), self.branch_f.fvalue_y[0], self.branch_g.fvalue_y[0]])
-        cog = self.defuzzy()
+        ymax = ymax * 1.1
+        ymin = ymin * 0.9
+        s1, s2 = self.param_s
 
-        ax1.plot(self.price, label='bid_price')
-        ax1.plot(self.price + self.spread, label='ask_price')
+        ax1.plot(self.price, 'k-', label='price (Bid)')
+        ax1.plot(self.price + self.spread, 'k--', label='price (Ask)')
         ax1.set_title('Price')
-        ax1.axhline(cog)
+        ax1.axhline(s1, c='g', ls='-.')
+        ax1.axhline(s2, c='g', ls='-.')
+
         ax1.set_ylim(ymin, ymax)
         ax1.legend()
-        ax2.plot(self.branch_f.domain_x, self.branch_f.fvalue_y, 'r', label='branch_f')
-        ax2.plot(self.branch_g.domain_x, self.branch_g.fvalue_y, 'b', label='branch_g')
-        ax2.axhline(cog)
+        ax2.plot(self.branch_f.domain_x, self.branch_f.fvalue_y, 'r', label='$f$')
+        ax2.plot(self.branch_g.domain_x, self.branch_g.fvalue_y, 'b', label='$g$')
+        ax2.axhline(s1, c='g', ls='-.')
+        ax2.axhline(s2, c='g', ls='-.')
         ax2.set_ylim(ymin, ymax)
         ax2.set_title('OFNumber')
         ax2.legend()

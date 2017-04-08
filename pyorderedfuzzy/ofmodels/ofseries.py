@@ -29,8 +29,11 @@ class OFSeries(list):
         return OFSeries(new_ofns)
 
     # Augmented Dickey-Fuller test from statsmodels.tsa
-    def adfuller(self, verbose='max', s=0, e=-1, **kwargs):
-        ofns = self[s:e]
+    def adfuller(self, verbose='max', s=0, e=None, **kwargs):
+        if e is None:
+            ofns = self[s:]
+        else:
+            ofns = self[s:e]
         n = len(ofns)
         dim = ofns[0].branch_f.dim
         res = []
@@ -53,8 +56,11 @@ class OFSeries(list):
         return res
 
     # Partial autocorrelation estimated from statsmodels.tsa
-    def pacf(self, nlags=20, method='ywunbiased', alpha=None, verbose='maxmin', s=0, e=-1):
-        ofns = self[s:e]
+    def pacf(self, nlags=20, method='ywunbiased', alpha=None, verbose='maxmin', s=0, e=None):
+        if e is None:
+            ofns = self[s:]
+        else:
+            ofns = self[s:e]
         n = len(ofns)
         dim = ofns[0].branch_f.dim
         res = []
@@ -80,8 +86,11 @@ class OFSeries(list):
         return res
 
     # Returns information criteria for many ARMA models, arma_order_selctic from statsmodels.tsa
-    def arma_select_order_ic(self, max_ar=5, max_ma=0, ic=['aic'], trend='c', verbose='max', s=0, e=-1, **kwargs):
-        ofns = self[s:e]
+    def arma_select_order_ic(self, max_ar=5, max_ma=0, ic=['aic'], trend='c', verbose='max', s=0, e=None, **kwargs):
+        if e is None:
+            ofns = self[s:]
+        else:
+            ofns = self[s:e]
         n = len(ofns)
         dim = ofns[0].branch_f.dim
         res = []
@@ -108,8 +117,11 @@ class OFSeries(list):
                                                                     for i in range(len(res))])))
         return res
 
-    def plot_ofts(self, ax, s=0, e=-1, color='black', shift=0, ord_method='expected'):
-        ofns = self[s:e]
+    def plot_ofseries(self, ax, s=0, e=None, color='black', shift=0, ord_method='expected'):
+        if e is None:
+            ofns = self[s:]
+        else:
+            ofns = self[s:e]
         n = len(ofns)
         for i in range(n):
             f = ofns[i].branch_f
@@ -125,11 +137,11 @@ class OFSeries(list):
             ax.plot([i+shift-0.25, i+shift-0.25], [f.fvalue_y[0], g.fvalue_y[0]], c='black')
         ax.set_xlim(-1+shift, n+shift)
 
-    def histogram(self, level='f_0', bins=10, normed=False, s=0, e=-1, **kwargs):
+    def histogram(self, level='f_0', bins=10, normed=False, s=0, e=None, **kwargs):
         lev = level.split('_')
         branch = lev[0]
         alpha = float(lev[1])
-        if e == -1:
+        if e is None:
             e = len(self)
         if 0.0 <= alpha <= 1.0:
             if branch == 'f':

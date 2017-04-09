@@ -84,5 +84,5 @@ def fun_obj(p, n_coef, dim, x, y):
     y_prog = np.apply_along_axis(lambda v: linreg(coef, v), 1, x)
     r = (y - y_prog)**2
     e = map(lambda v: v.defuzzy(method='expected'), r)
-    e = np.sum(np.array(e))
+    e = np.sum(list(e))
     return e

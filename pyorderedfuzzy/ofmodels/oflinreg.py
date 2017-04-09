@@ -44,10 +44,8 @@ class OFLinearRegression(object):
     def predict(self, x):
         if self.intercept:
             x = add_one(x)
-        y = []
-        for i in range(len(x)):
-            y.append(linreg(self.coef, x[i]))
-        return np.array(y, )
+        y_prog = np.apply_along_axis(lambda v: linreg(self.coef, v), 1, x)
+        return OFSeries(y_prog)
 
 
 def add_one(data):

@@ -18,7 +18,7 @@ setup(
     packages=['pyorderedfuzzy', 'pyorderedfuzzy.ofnumbers', 'pyorderedfuzzy.ofcandles',
               'pyorderedfuzzy.ofrandoms', 'pyorderedfuzzy.ofmodels'],
     ext_modules=[objective],
-    py_modules=['objective'],
+    py_modules=['pyorderedfuzzy.ofmodels.objective'],
     url='',
     license='',
     author='amarszalek',

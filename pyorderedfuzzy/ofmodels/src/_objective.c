@@ -40,7 +40,7 @@ PyMODINIT_FUNC PyInit__objective(void)
 
 static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
 {
-    int np, nx, ny, ng, n_coef, dim2;
+    int n_coef, dim2;
     PyObject *p_obj, *xx_obj, *yy_obj, *g_obj;
 
     /* Parse the input tuple */

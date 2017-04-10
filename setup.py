@@ -24,7 +24,7 @@ objective = Extension('pyorderedfuzzy.ofmodels._objective',
                       sources=['pyorderedfuzzy/ofmodels/src/objective.c',
                                'pyorderedfuzzy/ofmodels/src/utils.c',
                                'pyorderedfuzzy/ofmodels/src/objective.i'],
-                      include_dirs=[numpy_include], swig_opts=['-py3'])
+                      include_dirs=[numpy_include], swig_opts=['-py3', '-modern', '-I../include'])
 
 setup(
     cmdclass={'build': CustomBuild, 'install': CustomInstall},
@@ -33,7 +33,7 @@ setup(
     packages=['pyorderedfuzzy', 'pyorderedfuzzy.ofnumbers', 'pyorderedfuzzy.ofcandles',
               'pyorderedfuzzy.ofrandoms', 'pyorderedfuzzy.ofmodels'],
     ext_modules=[objective],
-    py_modules=['pyorderedfuzzy.ofmodels.objective'],
+    py_modules=['objective'],
     url='',
     license='',
     author='amarszalek',

@@ -8,7 +8,7 @@
 
 double obj_func_lin_reg(double *p, int np, double *xx, int nx, double *yy, int ny, int n_coef, int dim2, double *grad, int ng)
 {
-    int t, j, T;
+    int t, j, k, T;
     double r, error;
     double *pred;
 

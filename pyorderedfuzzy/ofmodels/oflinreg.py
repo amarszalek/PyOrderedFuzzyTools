@@ -46,7 +46,7 @@ class OFLinearRegression(object):
             xx = ofns2array(x.reshape(x.shape[0]*x.shape[1]))
             yy = ofns2array(y)
             args = (self.n_coef, dim, xx, yy)
-            res = minimize(fun_obj_ols_c, p0, args=args, method='L-BFGS-B', jac=True, options=options)
+            res = minimize(fun_obj_ols_c, p0, args=args, method='L-BFGS-B', options=options)
             coef = array2ofns(res.x, self.n_coef, dim)
             self.coef = OFSeries(coef)
         else:
@@ -103,4 +103,4 @@ def fun_obj_ols(p, n_coef, dim, x, y):
 
 def fun_obj_ols_c(p, n_coef, dim, xx, yy):
     res = obj_func_lin_reg(p, xx, yy, n_coef, dim*2)
-    return res[0], np.array(res[1])
+    return res#[0], np.array(res[1])

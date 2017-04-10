@@ -10,7 +10,7 @@ static char obj_func_lin_reg_docstring[] = "Calculate objective function for lin
 static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
-    {"objective", objective_obj_func_lin_reg, METH_VARARGS, obj_func_lin_reg_docstring},
+    {"obj_func_lin_reg", objective_obj_func_lin_reg, METH_VARARGS, obj_func_lin_reg_docstring},
     {NULL, NULL, 0, NULL}
 };
 

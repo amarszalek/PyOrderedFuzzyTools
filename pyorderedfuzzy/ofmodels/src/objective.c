@@ -27,7 +27,7 @@ double obj_func_lin_reg(double *p, int np, double *xx, int nx, double *yy, int n
             error += r*r;
             for(k=0; k<n_coef; k++)
             {
-                grad[k*dim2+j] -= 2.0*r*xx[t*k*dim2+k*dim2+j];
+                grad[k*dim2+j] -= 2.0*r*xx[t*n_coef*dim2+k*dim2+j];
             }
         }
     }

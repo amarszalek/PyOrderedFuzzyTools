@@ -6,7 +6,7 @@ try:
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
-objective = Extension('_objective',
+objective = Extension('pyorderedfuzzy.ofmodels._objective',
                       sources=['pyorderedfuzzy/ofmodels/src/objective.i',
                                'pyorderedfuzzy/ofmodels/src/objective.c',
                                'pyorderedfuzzy/ofmodels/src/utils.c'],
@@ -20,7 +20,7 @@ setup(
               'pyorderedfuzzy.ofrandoms', 'pyorderedfuzzy.ofmodels'],
 
     ext_modules=[objective, ],
-    py_modules=['objective', ],
+    py_modules=['pyorderedfuzzy.ofmodels.objective', ],
     url='',
     license='',
     author='amarszalek',

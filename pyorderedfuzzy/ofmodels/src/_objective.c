@@ -40,25 +40,23 @@ PyMODINIT_FUNC PyInit__objective(void)
 
 static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
 {
-    int n_coef, dim2;
-    PyObject *p_obj, *xx_obj, *yy_obj, *g_obj;
+    int i, n_coef, dim2;
+    PyObject *p_obj, *xx_obj, *yy_obj;
 
     /* Parse the input tuple */
-    if (!PyArg_ParseTuple(args, "OOOiiO", &p_obj, &xx_obj, &yy_obj, &n_coef, &dim2, &g_obj))
+    if (!PyArg_ParseTuple(args, "OOOii", &p_obj, &xx_obj, &yy_obj, &n_coef, &dim2))
         return NULL;
 
     /* Interpret the input objects as numpy arrays. */
     PyObject *p_array = PyArray_FROM_OTF(p_obj, NPY_DOUBLE, NPY_IN_ARRAY);
     PyObject *xx_array = PyArray_FROM_OTF(xx_obj, NPY_DOUBLE, NPY_IN_ARRAY);
     PyObject *yy_array = PyArray_FROM_OTF(yy_obj, NPY_DOUBLE, NPY_IN_ARRAY);
-    PyObject *g_array = PyArray_FROM_OTF(g_obj, NPY_DOUBLE, NPY_IN_ARRAY);
 
     /* If that didn't work, throw an exception. */
-    if (p_array == NULL || xx_array == NULL || yy_array == NULL || yy_array == NULL) {
+    if (p_array == NULL || xx_array == NULL || yy_array == NULL ) {
         Py_XDECREF(p_array);
         Py_XDECREF(xx_array);
         Py_XDECREF(yy_array);
-        Py_XDECREF(g_array);
         return NULL;
     }
 
@@ -66,13 +64,15 @@ static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
     int np = (int)PyArray_DIM(p_array, 0);
     int nx = (int)PyArray_DIM(xx_array, 0);
     int ny = (int)PyArray_DIM(yy_array, 0);
-    int ng = (int)PyArray_DIM(g_array, 0);
+    int ng = n_coef*dim2;
 
     /* Get pointers to the data as C-types. */
-    double *p    = (double*)PyArray_DATA(p_array);
-    double *xx    = (double*)PyArray_DATA(xx_array);
+    double *p = (double*)PyArray_DATA(p_array);
+    double *xx = (double*)PyArray_DATA(xx_array);
     double *yy = (double*)PyArray_DATA(yy_array);
-    double *g = (double*)PyArray_DATA(g_array);
+    double *g;
+
+    g=(double*)malloc(ng*sizeof(double));
 
     /* Call the external C function to compute the chi-squared. */
     double value = obj_func_lin_reg(p, np, xx, nx, yy, ny, n_coef, dim2, g, ng);
@@ -81,10 +81,12 @@ static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
     Py_DECREF(p_array);
     Py_DECREF(xx_array);
     Py_DECREF(yy_array);
-    Py_DECREF(g_array);
-
 
     /* Build the output tuple */
-    PyObject *ret = Py_BuildValue("d", value);
+    PyListObject *grad = PyList_New(ng);
+    for(i=0;i<ng;i++) PyList_Append(grad, Py_BuildValue("d", g[i]))
+    PyObject *ret = Py_BuildValue("(dO)", error, grad);
+
+    free(g);
     return ret;
 }

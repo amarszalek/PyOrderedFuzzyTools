@@ -39,6 +39,7 @@ class OFLinearRegression(object):
             coef = array2ofns(res.x, self.n_coef, dim)
             self.coef = OFSeries(coef)
         elif solver == 'CL-BFGS-B':
+            from pyorderedfuzzy.ofmodels import _objective
             if options == {}:
                 options = {'disp': None, 'gtol': 1e-08, 'eps': 1e-08, 'maxiter': 1000, 'ftol': 2.22e-09}
             p0 = ofns2array(coef)
@@ -100,13 +101,6 @@ def fun_obj_ols(p, n_coef, dim, x, y):
     return e, np.array(grad)
 
 
-def fun_obj_ols_c(p, n_coef, dim, x, y):
-
-
-    coef = array2ofns(p, n_coef, dim)
-    y_prog = np.apply_along_axis(lambda v: linreg(coef, v), 1, x)
-    r = (y - y_prog)**2
-    e = map(lambda v: v.defuzzy(method='expected'), r)
-    e = np.sum(list(e))
-    return e
-
+def fun_obj_ols_c(p, n_coef, dim, xx, yy):
+    res = _objective.obj_func_lin_reg(p, xx, yy, n_coef, dim*2)
+    return res[0], np.array(res[1])

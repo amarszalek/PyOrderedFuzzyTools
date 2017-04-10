@@ -15,6 +15,7 @@ class OFLinearRegression(object):
         self.intercept = intercept
         self.n_coef = 0
         self.coef = OFSeries([])
+        self.residuals = OFSeries([])
 
     # x, y -> np.array of OFN
     # x.shape = (T, N), y.shape = (T,)
@@ -51,6 +52,9 @@ class OFLinearRegression(object):
             self.coef = OFSeries(coef)
         else:
             raise ValueError('wrong method')
+
+        y_prog = np.apply_along_axis(lambda v: linreg(self.coef, v), 1, x)
+        self.residuals = OFSeries(y-y_prog)
 
     def predict(self, x):
         if self.intercept:

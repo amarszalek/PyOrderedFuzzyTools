@@ -17,4 +17,4 @@ setup(name='objective',
       author="amarszalek",
       version="1.0",
       ext_modules=[objective],
-      py_modules=["objective"],)
+      py_modules=["../objective"],)

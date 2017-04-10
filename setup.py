@@ -7,8 +7,8 @@ try:
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
-call("swig -python -py3 pyorderedfuzzy/ofmodels/src/objective.i")
-call("python pyorderedfuzzy/ofmodels/src/setup.py build_ext --inplace")
+call('swig -python -py3 pyorderedfuzzy/ofmodels/src/objective.i', shell=True)
+call('python pyorderedfuzzy/ofmodels/src/setup.py build_ext --inplace', shell=True)
 
 
 setup(

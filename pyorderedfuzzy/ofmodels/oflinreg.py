@@ -20,7 +20,7 @@ class OFLinearRegression(object):
     # x.shape = (T, N), y.shape = (T,)
     def fit(self, x, y, solver='L-BFGS-B', options={}):
         dim = x[0, 0].branch_f.dim
-        self.n_coef += x.shape[1]
+        self.n_coef = x.shape[1]
         if self.intercept:
             self.n_coef += 1
             x = add_one(x)
@@ -103,4 +103,4 @@ def fun_obj_ols(p, n_coef, dim, x, y):
 
 def fun_obj_ols_c(p, n_coef, dim, xx, yy):
     res = obj_func_lin_reg(p, xx, yy, n_coef, dim*2)
-    return res#[0], np.array(res[1])
+    return res[0], np.array(res[1])

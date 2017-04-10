@@ -7,11 +7,10 @@ except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
 objective = Extension('pyorderedfuzzy.ofmodels._objective',
-                      sources=['pyorderedfuzzy/ofmodels/src/objective.i',
+                      sources=['pyorderedfuzzy/ofmodels/src/objective_wrap.c',
                                'pyorderedfuzzy/ofmodels/src/objective.c',
                                'pyorderedfuzzy/ofmodels/src/utils.c'],
-                      include_dirs=[numpy_include],
-                      swig_opts=['-py3', '-modern', '-I../include'])
+                      include_dirs=[numpy_include])
 
 setup(
     name='pyorderedfuzzy',

@@ -83,9 +83,14 @@ static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
     Py_DECREF(yy_array);
 
     /* Build the output tuple */
+
+
     PyObject *grad = PyList_New(ng);
-    for(i=0;i<ng;i++) PyList_Append(grad, Py_BuildValue("d", g[i]));
-    PyObject *ret = Py_BuildValue("(dO)", error, grad);
+    for(i=0;i<ng;i++) PyList_SET_ITEM(grad, i, Py_BuildValue("d", *g[i]));
+
+    PyObject *ret = PyTuple_New(2);
+    PyTuple_SET_ITEM(ret, 0, Py_BuildValue("d", error);
+    PyTuple_SET_ITEM(ret, 1, Py_BuildValue("O", grad);
     //PyObject *ret = Py_BuildValue("d", error);
     free(g);
     return ret;

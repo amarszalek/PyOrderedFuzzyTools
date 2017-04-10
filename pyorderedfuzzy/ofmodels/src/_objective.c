@@ -86,7 +86,7 @@ static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
 
 
     PyObject *grad = PyList_New(ng);
-    for(i=0;i<ng;i++) PyList_SET_ITEM(grad, i, Py_BuildValue("d", *g[i]));
+    for(i=0;i<ng;i++) PyList_SET_ITEM(grad, i, Py_BuildValue("d", g[i]));
 
     PyObject *ret = PyTuple_New(2);
     PyTuple_SET_ITEM(ret, 0, Py_BuildValue("d", error);

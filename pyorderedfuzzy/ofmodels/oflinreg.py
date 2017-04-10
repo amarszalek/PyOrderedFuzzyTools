@@ -97,14 +97,12 @@ def fun_obj_ols(p, n_coef, dim, x, y):
     for i in range(n_coef):
         g = np.sum(-2*r*x[:, i])
         grad.extend(g.to_array())
-
-
-    #e = map(lambda v: v.defuzzy(method='expected'), r)
-    #e = np.sum(list(e))
     return e, np.array(grad)
 
 
 def fun_obj_ols_c(p, n_coef, dim, x, y):
+
+
     coef = array2ofns(p, n_coef, dim)
     y_prog = np.apply_along_axis(lambda v: linreg(coef, v), 1, x)
     r = (y - y_prog)**2

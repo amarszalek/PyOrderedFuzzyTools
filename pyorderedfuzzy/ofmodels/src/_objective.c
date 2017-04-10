@@ -10,17 +10,32 @@ static char obj_func_lin_reg_docstring[] = "Calculate objective function for lin
 static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
-    {"objective", objective_obj_func_lin_reg, METH_VARARGS, chi2_docstring}
+    {"objective", objective_obj_func_lin_reg, METH_VARARGS, obj_func_lin_reg_docstring},
+    {NULL, NULL, 0, NULL}
 };
 
-PyMODINIT_FUNC init_objective(void)
+
+PyMODINIT_FUNC PyInit__objective(void)
 {
-    PyObject *m = Py_InitModule3("_objective", module_methods, module_docstring);
-    if (m == NULL)
-        return;
+    PyObject *module;
+    static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "_objective",
+        module_docstring,
+        -1,
+        module_methods,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    };
+    module = PyModule_Create(&moduledef);
+    if (!module) return NULL;
 
     /* Load `numpy` functionality. */
     import_array();
+
+    return module;
 }
 
 static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)

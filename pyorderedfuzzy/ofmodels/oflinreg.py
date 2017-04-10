@@ -4,6 +4,7 @@ import numpy as np
 from pyorderedfuzzy.ofnumbers.ofnumber import OFNumber
 from pyorderedfuzzy.ofmodels.ofseries import OFSeries
 from scipy.optimize import minimize
+from pyorderedfuzzy.ofmodels._objective import obj_func_lin_reg
 
 __author__ = "amarszalek"
 
@@ -39,7 +40,6 @@ class OFLinearRegression(object):
             coef = array2ofns(res.x, self.n_coef, dim)
             self.coef = OFSeries(coef)
         elif solver == 'CL-BFGS-B':
-            from pyorderedfuzzy.ofmodels import _objective
             if options == {}:
                 options = {'disp': None, 'gtol': 1e-08, 'eps': 1e-08, 'maxiter': 1000, 'ftol': 2.22e-09}
             p0 = ofns2array(coef)
@@ -102,5 +102,5 @@ def fun_obj_ols(p, n_coef, dim, x, y):
 
 
 def fun_obj_ols_c(p, n_coef, dim, xx, yy):
-    res = _objective.obj_func_lin_reg(p, xx, yy, n_coef, dim*2)
+    res = obj_func_lin_reg(p, xx, yy, n_coef, dim*2)
     return res[0], np.array(res[1])

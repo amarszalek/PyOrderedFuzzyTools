@@ -35,7 +35,17 @@ class OFLinearRegression(object):
                 options = {'disp': None, 'gtol': 1e-08, 'eps': 1e-08, 'maxiter': 1000, 'ftol': 2.22e-09}
             p0 = ofns2array(coef)
             args = (self.n_coef, dim, x, y)
-            res = minimize(fun_obj, p0, args=args, method='L-BFGS-B', options=options)
+            res = minimize(fun_obj_ols, p0, args=args, method='L-BFGS-B', jac=True, options=options)
+            coef = array2ofns(res.x, self.n_coef, dim)
+            self.coef = OFSeries(coef)
+        elif solver == 'CL-BFGS-B':
+            if options == {}:
+                options = {'disp': None, 'gtol': 1e-08, 'eps': 1e-08, 'maxiter': 1000, 'ftol': 2.22e-09}
+            p0 = ofns2array(coef)
+            xx = ofns2array(x.reshape(x.shape[0]*x.shape[1]))
+            yy = ofns2array(y)
+            args = (self.n_coef, dim, xx, yy)
+            res = minimize(fun_obj_ols_c, p0, args=args, method='L-BFGS-B', jac=True, options=options)
             coef = array2ofns(res.x, self.n_coef, dim)
             self.coef = OFSeries(coef)
         else:
@@ -77,10 +87,28 @@ def linreg(coef, x):
     return np.dot(np.array(coef, dtype=object), x)
 
 
-def fun_obj(p, n_coef, dim, x, y):
+def fun_obj_ols(p, n_coef, dim, x, y):
+    coef = array2ofns(p, n_coef, dim)
+    y_prog = np.apply_along_axis(lambda v: linreg(coef, v), 1, x)
+    r = (y - y_prog)
+    e = map(lambda v: v.to_array(), r*r)
+    e = np.sum(list(e))
+    grad = []
+    for i in range(n_coef):
+        g = np.sum(-2*r*x[:, i])
+        grad.extend(g.to_array())
+        
+
+    #e = map(lambda v: v.defuzzy(method='expected'), r)
+    #e = np.sum(list(e))
+    return e, grad
+
+
+def fun_obj_ols_c(p, n_coef, dim, x, y):
     coef = array2ofns(p, n_coef, dim)
     y_prog = np.apply_along_axis(lambda v: linreg(coef, v), 1, x)
     r = (y - y_prog)**2
     e = map(lambda v: v.defuzzy(method='expected'), r)
     e = np.sum(list(e))
     return e
+

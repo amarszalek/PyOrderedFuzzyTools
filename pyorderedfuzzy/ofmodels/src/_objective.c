@@ -75,7 +75,7 @@ static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
     g=(double*)malloc(ng*sizeof(double));
 
     /* Call the external C function to compute the chi-squared. */
-    double value = obj_func_lin_reg(p, np, xx, nx, yy, ny, n_coef, dim2, g, ng);
+    double error = obj_func_lin_reg(p, np, xx, nx, yy, ny, n_coef, dim2, g, ng);
 
     /* Clean up. */
     Py_DECREF(p_array);
@@ -84,7 +84,7 @@ static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
 
     /* Build the output tuple */
     PyListObject *grad = PyList_New(ng);
-    for(i=0;i<ng;i++) PyList_Append(grad, Py_BuildValue("d", g[i]))
+    for(i=0;i<ng;i++) PyList_Append(grad, Py_BuildValue("d", g[i]));
     PyObject *ret = Py_BuildValue("(dO)", error, grad);
 
     free(g);

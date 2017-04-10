@@ -11,8 +11,6 @@ setup(
     version='0.0.1',
     packages=['pyorderedfuzzy', 'pyorderedfuzzy.ofnumbers', 'pyorderedfuzzy.ofcandles',
               'pyorderedfuzzy.ofrandoms', 'pyorderedfuzzy.ofmodels'],
-    package_dir={'pyorderedfuzzy.ofmodels': 'pyorderedfuzzy/ofmodels'},
-    package_data={'pyorderedfuzzy.ofmodels': ['pyorderedfuzzy/ofmodels/*.so']},
     url='',
     license='',
     author='amarszalek',

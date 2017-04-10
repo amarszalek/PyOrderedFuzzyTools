@@ -44,7 +44,7 @@ static PyObject *objective_obj_func_lin_reg(PyObject *self, PyObject *args)
     PyObject *p_obj, *xx_obj, *yy_obj, *g_obj;
 
     /* Parse the input tuple */
-    if (!PyArg_ParseTuple(args, "ddOOO", &p_obj, &xx_obj, &yy_obj, &n_coef, &dim2, &g_obj))
+    if (!PyArg_ParseTuple(args, "OOOiiO", &p_obj, &xx_obj, &yy_obj, &n_coef, &dim2, &g_obj))
         return NULL;
 
     /* Interpret the input objects as numpy arrays. */

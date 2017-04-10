@@ -1,39 +1,21 @@
 from distutils.core import setup, Extension
-from distutils.command.build import build
-from setuptools.command.install import install
 import numpy
-
-class CustomBuild(build):
-    def run(self):
-        self.run_command('build_ext')
-        build.run(self)
-
-
-class CustomInstall(install):
-    def run(self):
-        self.run_command('build_ext')
-        self.do_egg_install()
+from subprocess import call
 
 try:
     numpy_include = numpy.get_include()
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
-objective = Extension('pyorderedfuzzy.ofmodels._objective',
-                      sources=['pyorderedfuzzy/ofmodels/src/objective_wrap.c',
-                               'pyorderedfuzzy/ofmodels/src/objective.c',
-                               'pyorderedfuzzy/ofmodels/src/utils.c'],
-                      include_dirs=[numpy_include])
+call("swig -python -py3 pyorderedfuzzy/ofmodels/src/objective.i")
+call("python pyorderedfuzzy/ofmodels/src/setup.py build_ext --inplace")
+
 
 setup(
-    cmdclass={'build': CustomBuild, 'install': CustomInstall},
     name='pyorderedfuzzy',
     version='0.0.1',
     packages=['pyorderedfuzzy', 'pyorderedfuzzy.ofnumbers', 'pyorderedfuzzy.ofcandles',
               'pyorderedfuzzy.ofrandoms', 'pyorderedfuzzy.ofmodels'],
-
-    ext_modules=[objective, ],
-    py_modules=['pyorderedfuzzy.ofmodels.objective', ],
     url='',
     license='',
     author='amarszalek',

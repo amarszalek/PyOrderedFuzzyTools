@@ -12,5 +12,5 @@ To get started, clone the repository, cd into the new directory, and install usi
 
 ```
 git clone https://github.com/amarszalek/PyOrderedFuzzyTools.git
-python setup.py install
+python install.py
 ```

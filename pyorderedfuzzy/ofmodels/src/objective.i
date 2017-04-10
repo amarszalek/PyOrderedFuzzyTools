@@ -1,6 +1,6 @@
 //objective.i
 
-%module cstuff
+%module objective
 
 %{
 	#define SWIG_FILE_WITH_INIT

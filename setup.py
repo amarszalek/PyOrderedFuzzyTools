@@ -32,7 +32,7 @@ setup(
     version='0.0.1',
     packages=['pyorderedfuzzy', 'pyorderedfuzzy.ofnumbers', 'pyorderedfuzzy.ofcandles',
               'pyorderedfuzzy.ofrandoms', 'pyorderedfuzzy.ofmodels'],
-    ext_modules=[objective],
+    ext_modules=objective,
     py_modules=['objective'],
     url='',
     license='',

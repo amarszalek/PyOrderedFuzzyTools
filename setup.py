@@ -1,15 +1,10 @@
-from distutils.core import setup, Extension
+from distutils.core import setup
 import numpy
-from subprocess import call
 
 try:
     numpy_include = numpy.get_include()
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
-
-call('swig -python -py3 pyorderedfuzzy/ofmodels/src/objective.i', shell=True)
-call('python pyorderedfuzzy/ofmodels/src/setup.py build_ext --inplace', shell=True)
-
 
 setup(
     name='pyorderedfuzzy',

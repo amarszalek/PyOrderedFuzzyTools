@@ -56,7 +56,7 @@ double obj_func_ar_ls(double *p, int np, double *cans, int nc, int n_coef, int d
             ar_bias(p, cans, order, dim2, i*dim2, ar);
             for(j=0;j<dim2;j++)
             {
-                r = cans[i*dim2+j]-ar[j]
+                r = cans[i*dim2+j]-ar[j];
                 error += r*r;
                 for(k=0; k<n_coef; k++)
                 {
@@ -79,7 +79,7 @@ double obj_func_ar_ls(double *p, int np, double *cans, int nc, int n_coef, int d
             ar_unbias(p, cans, order, dim2, i*dim2, ar);
             for(j=0;j<dim2;j++)
             {
-                r = cans[i*dim2+j]-ar[j]
+                r = cans[i*dim2+j]-ar[j];
                 error += r*r;
                 for(k=0; k<n_coef; k++)
                 {

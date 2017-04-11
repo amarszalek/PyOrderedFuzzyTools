@@ -106,7 +106,7 @@ static PyObject *objective_obj_func_ar_ls(PyObject *self, PyObject *args)
     PyObject *p_obj, *ofns_obj;
 
     /* Parse the input tuple */
-    if (!PyArg_ParseTuple(args, "OOiii", &p_obj, &ofns_obj, &n_coef, &dim2, intercept))
+    if (!PyArg_ParseTuple(args, "OOiii", &p_obj, &ofns_obj, &n_coef, &dim2, &intercept))
         return NULL;
 
     /* Interpret the input objects as numpy arrays. */

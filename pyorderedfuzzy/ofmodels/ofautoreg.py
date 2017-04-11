@@ -17,6 +17,7 @@ class OFAutoRegressive(object):
         self.order = order
         self.coef = OFSeries(coef)
         self.initial = initial
+        self.residuals = OFSeries([])
 
     def fit(self, ofseries, order, intercept=True, method='ls', solver='L-BFGS-B', options={}):
         dim = ofseries[0].branch_f.dim
@@ -47,7 +48,7 @@ class OFAutoRegressive(object):
                 res = minimize(fun_obj_cmle, p0, args=args, method='L-BFGS-B', jac=True, options=options)
                 coef_s = array2ofns(res.x, n_coef+1, dim)
                 coef = coef_s[:-1]
-                self.sig2 = coef_s[-1]
+                self.sig2 = coef_s[-1]*coef_s[-1]
             else:
                 raise ValueError('wrong method')
             self.coef = OFSeries(coef)
@@ -65,7 +66,7 @@ class OFAutoRegressive(object):
                 res = minimize(fun_obj_cmle_c, p0, args=args, method='L-BFGS-B', jac=True, options=options)
                 coef_s = array2ofns(res.x, n_coef + 1, dim)
                 coef = coef_s[:-1]
-                self.sig2 = coef_s[-1]
+                self.sig2 = coef_s[-1]*coef_s[-1]
             else:
                 raise ValueError('wrong method')
 
@@ -73,14 +74,14 @@ class OFAutoRegressive(object):
         else:
             raise ValueError('wrong solver')
 
-        # residuals = []
-        # for i in range(order, len(candles)):
-        #     if i < order:
-        #         residuals.append(OFNumber(np.zeros(dim), np.zeros(dim)))
-        #     else:
-        #         pred = self.predict(1, initial=candles[i-order:i])
-        #         residuals.append(candles[i]-pred[0])
-        # self.residuals = residuals
+        residuals = []
+        for i in range(order, len(ofseries)):
+            if i < order:
+                residuals.append(OFNumber(np.zeros(dim), np.zeros(dim)))
+            else:
+                pred = self.predict(1, initial=ofseries[i-order:i])
+                residuals.append(ofseries[i]-pred[0])
+        self.residuals = OFSeries(residuals)
 
     def predict(self, n, initial=None, mean=None):
         if initial is None:
@@ -99,7 +100,7 @@ class OFAutoRegressive(object):
                 y = y + mean
             predicted.append(y)
             initial.append(y)
-        return predicted
+        return OFSeries(predicted)
 
 
 def autoreg_bias(coef, past):

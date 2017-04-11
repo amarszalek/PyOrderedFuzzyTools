@@ -111,8 +111,9 @@ double obj_func_ar_cml(double *p, int np, double *cans, int nc, int n_coef, int 
     error = 0.0;
     for(i=0;i<dim2;i++)
     {
-        error += 0.5*(n_cans-order)*log(p[n_coef*dim2+i]);
-        grad[n_coef*dim2+i] = (n_cans-order)/p[n_coef*dim2+i];
+        ps = p[n_coef*dim2+i];
+        error += 0.5*(n_cans-order)*log(ps*ps);
+        grad[n_coef*dim2+i] = (n_cans-order)/ps;
     }
 
     if(intercept == 1)

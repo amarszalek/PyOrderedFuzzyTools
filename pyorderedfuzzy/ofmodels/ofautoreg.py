@@ -47,7 +47,7 @@ class OFAutoRegressive(object):
                 raise ValueError('wrong method')
             coef = array2ofns(res.x, n_coef, dim)
             self.coef = OFSeries(coef)
-        elif solver == 'C_L-BFGS-B':
+        elif solver == 'CL-BFGS-B':
             if options == {}:
                 options = {'disp': None, 'gtol': 1.0e-12, 'eps': 1e-08, 'maxiter': 1000, 'ftol': 2.22e-09}
             p0 = ofns2array(coef)
@@ -93,13 +93,18 @@ class OFAutoRegressive(object):
         return predicted
 
 
-def autoreg(coef, past, intercept):
-    if intercept:
-        ar = np.dot(coef[1:], past[::-1])
-        ar = ar + coef[0]
-    else:
-        ar = np.dot(coef, past[::-1])
-    return ar
+def autoreg_bias(coef, past):
+    y = coef[0].copy()
+    for p in range(1, len(coef)):
+        y = y + coef[p] * past[-p]
+    return y
+
+
+def autoreg_unbias(coef, past):
+    y = coef[0] * past[-1]
+    for p in range(1, len(coef)):
+        y = y + coef[p] * past[-p-1]
+    return y
 
 
 def fun_obj_ols(p, order, n_coef, dim, ofns, intercept):
@@ -110,14 +115,14 @@ def fun_obj_ols(p, order, n_coef, dim, ofns, intercept):
     grad = np.zeros(len(p))
     if intercept:
         for i in range(order, n_cans):
-            r = can[i] - autoreg(coef, can[i-order:i], intercept)
+            r = can[i] - autoreg_bias(coef, can[i-order:i])
             e += np.sum(r * r)
             grad[:2 * dim] -= 2.0 * r
             for j in range(1, n_coef):
                 grad[2 * dim * j:2 * dim * (j + 1)] -= 2 * r * can[i - j]
     else:
         for i in range(n_coef, n_cans):
-            r = can[i] - autoreg(coef, can[i-n_coef:i], intercept)
+            r = can[i] - autoreg_unbias(coef, can[i-n_coef:i])
             e += np.sum(r * r)
             for j in range(n_coef):
                 grad[2 * dim * j:2 * dim * (j + 1)] -= 2 * r * can[i - j-1]

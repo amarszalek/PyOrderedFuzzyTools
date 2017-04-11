@@ -51,7 +51,7 @@ class OFLinearRegression(object):
             coef = array2ofns(res.x, self.n_coef, dim)
             self.coef = OFSeries(coef)
         else:
-            raise ValueError('wrong method')
+            raise ValueError('wrong solver')
 
         y_prog = np.apply_along_axis(lambda v: linreg(self.coef, v), 1, x)
         self.residuals = OFSeries(y-y_prog)

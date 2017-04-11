@@ -41,11 +41,15 @@ class OFAutoRegressive(object):
             args = (order, n_coef, dim, ofns, intercept)
             if method == 'ls':
                 res = minimize(fun_obj_ols, p0, args=args, method='L-BFGS-B', jac=True, options=options)
-            elif method == 'ml':
-                res = minimize(fun_obj_mle, p0, args=args, method='L-BFGS-B', jac=True, options=options)
+                coef = array2ofns(res.x, n_coef, dim)
+            elif method == 'cml':
+                p0 = np.array((p0.tolist()).extend(np.random.random(2*dim)))
+                res = minimize(fun_obj_cmle, p0, args=args, method='L-BFGS-B', options=options)
+                coef_s = array2ofns(res.x, n_coef+1, dim)
+                coef = coef_s[:-1]
             else:
                 raise ValueError('wrong method')
-            coef = array2ofns(res.x, n_coef, dim)
+
             self.coef = OFSeries(coef)
         elif solver == 'CL-BFGS-B':
             if options == {}:
@@ -55,8 +59,8 @@ class OFAutoRegressive(object):
             args = (n_coef, dim, ofns, self.intercept)
             if method == 'ls':
                 res = minimize(fun_obj_ols_c, p0, args=args, method='L-BFGS-B', jac=True, options=options)
-            elif method == 'ml':
-                res = minimize(fun_obj_mle_c, p0, args=args, method='L-BFGS-B', jac=True, options=options)
+            elif method == 'cml':
+                res = minimize(fun_obj_cmle_c, p0, args=args, method='L-BFGS-B', jac=True, options=options)
             else:
                 raise ValueError('wrong method')
             coef = array2ofns(res.x, n_coef, dim)
@@ -137,9 +141,30 @@ def fun_obj_ols_c(p, n_coef, dim, ofns, intercept):
     return res[0], np.array(res[1])
 
 
-def fun_obj_mle():
-    pass
+def fun_obj_cmle(p, order, n_coef, dim, ofns, intercept):
+
+    pp = p[:-2*dim]
+    ps = p[-2*dim:]
+    n_cans = int(len(ofns) / (2 * dim))
+    can = ofns.reshape((n_cans, 2 * dim))
+    coef = pp.reshape((n_coef, 2 * dim))
+    e = np.sum(0.5*(n_cans - order)*np.log(ps*ps))
+    grad = np.zeros(len(p))
+    if intercept:
+        for i in range(order, n_cans):
+            r = can[i] - autoreg_bias(coef, can[i - order:i])
+            e += np.sum((r * r)/(2.0*ps*ps))
+            #grad[:2 * dim] -= 2.0 * r
+            #for j in range(1, n_coef):
+            #    grad[2 * dim * j:2 * dim * (j + 1)] -= 2 * r * can[i - j]
+    else:
+        for i in range(n_coef, n_cans):
+            r = can[i] - autoreg_unbias(coef, can[i - n_coef:i])
+            e += np.sum((r * r) / (2.0 * ps * ps))
+            #for j in range(n_coef):
+            #    grad[2 * dim * j:2 * dim * (j + 1)] -= 2 * r * can[i - j - 1]
+    return e#, grad
 
 
-def fun_obj_mle_c():
+def fun_obj_cmle_c():
     pass

@@ -43,6 +43,8 @@ double obj_func_ar_ls(double *p, int np, double *cans, int nc, int n_coef, int d
     double error, r;
     double *ar;
 
+    for(j=0;j<ng;j++) grad[j]=0.0;
+
     n_cans = (int)(nc/dim2);
     ar=(double*)malloc(dim2*sizeof(double));
     order = n_coef;

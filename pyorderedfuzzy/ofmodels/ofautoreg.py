@@ -59,11 +59,16 @@ class OFAutoRegressive(object):
             args = (n_coef, dim, ofns, self.intercept)
             if method == 'ls':
                 res = minimize(fun_obj_ols_c, p0, args=args, method='L-BFGS-B', jac=True, options=options)
+                coef = array2ofns(res.x, n_coef, dim)
             elif method == 'cml':
+                p0 = np.concatenate((p0, np.ones(2 * dim) * np.random.random()))
                 res = minimize(fun_obj_cmle_c, p0, args=args, method='L-BFGS-B', jac=True, options=options)
+                coef_s = array2ofns(res.x, n_coef + 1, dim)
+                coef = coef_s[:-1]
+                self.sig2 = coef_s[-1]
             else:
                 raise ValueError('wrong method')
-            coef = array2ofns(res.x, n_coef, dim)
+
             self.coef = OFSeries(coef)
         else:
             raise ValueError('wrong solver')

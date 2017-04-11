@@ -43,8 +43,8 @@ class OFAutoRegressive(object):
                 res = minimize(fun_obj_ols, p0, args=args, method='L-BFGS-B', jac=True, options=options)
                 coef = array2ofns(res.x, n_coef, dim)
             elif method == 'cml':
-                p0 = np.concatenate((p0,np.random.random(2*dim)))
-                res = minimize(fun_obj_cmle, p0, args=args, method='L-BFGS-B', options=options)
+                p0 = np.concatenate((p0, np.random.random(2*dim)))
+                res = minimize(fun_obj_cmle, p0, args=args, method='L-BFGS-B', jac=True, options=options)
                 coef_s = array2ofns(res.x, n_coef+1, dim)
                 coef = coef_s[:-1]
             else:
@@ -150,20 +150,23 @@ def fun_obj_cmle(p, order, n_coef, dim, ofns, intercept):
     coef = pp.reshape((n_coef, 2 * dim))
     e = np.sum(0.5*(n_cans - order)*np.log(ps*ps))
     grad = np.zeros(len(p))
+    grad[-2*dim:] = (n_cans - order)/ps
     if intercept:
         for i in range(order, n_cans):
             r = can[i] - autoreg_bias(coef, can[i - order:i])
+            grad[-2 * dim:] -= (r*r)/(ps*ps*ps)
             e += np.sum((r * r)/(2.0*ps*ps))
-            #grad[:2 * dim] -= 2.0 * r
-            #for j in range(1, n_coef):
-            #    grad[2 * dim * j:2 * dim * (j + 1)] -= 2 * r * can[i - j]
+            grad[:2 * dim] -= r/(ps*ps)
+            for j in range(1, n_coef):
+                grad[2 * dim * j:2 * dim * (j + 1)] -= (r/(ps*ps)) * can[i - j]
     else:
         for i in range(n_coef, n_cans):
             r = can[i] - autoreg_unbias(coef, can[i - n_coef:i])
+            grad[-2 * dim:] -= (r * r) / (ps * ps * ps)
             e += np.sum((r * r) / (2.0 * ps * ps))
-            #for j in range(n_coef):
-            #    grad[2 * dim * j:2 * dim * (j + 1)] -= 2 * r * can[i - j - 1]
-    return e#, grad
+            for j in range(n_coef):
+                grad[2 * dim * j:2 * dim * (j + 1)] -= (r/(ps*ps)) * can[i - j - 1]
+    return e, grad
 
 
 def fun_obj_cmle_c():

@@ -43,7 +43,7 @@ class OFAutoRegressive(object):
                 res = minimize(fun_obj_ols, p0, args=args, method='L-BFGS-B', jac=True, options=options)
                 coef = array2ofns(res.x, n_coef, dim)
             elif method == 'cml':
-                p0 = np.array((p0.tolist()).extend(np.random.random(2*dim)))
+                p0 = np.concatenate((p0,np.random.random(2*dim)))
                 res = minimize(fun_obj_cmle, p0, args=args, method='L-BFGS-B', options=options)
                 coef_s = array2ofns(res.x, n_coef+1, dim)
                 coef = coef_s[:-1]

@@ -5,7 +5,7 @@ from pyorderedfuzzy.ofnumbers.ofnumber import OFNumber
 from pyorderedfuzzy.ofmodels.ofseries import OFSeries
 from scipy.optimize import minimize
 from pyorderedfuzzy.ofmodels.oflinreg import ofns2array, array2ofns
-from pyorderedfuzzy.ofmodels._objective import obj_func_ar_ls
+from pyorderedfuzzy.ofmodels._objective import obj_func_ar_ls, obj_func_ar_cml
 
 __author__ = "amarszalek"
 
@@ -43,13 +43,13 @@ class OFAutoRegressive(object):
                 res = minimize(fun_obj_ols, p0, args=args, method='L-BFGS-B', jac=True, options=options)
                 coef = array2ofns(res.x, n_coef, dim)
             elif method == 'cml':
-                p0 = np.concatenate((p0, np.random.random(2*dim)))
+                p0 = np.concatenate((p0, np.ones(2*dim)*np.random.random()))
                 res = minimize(fun_obj_cmle, p0, args=args, method='L-BFGS-B', jac=True, options=options)
                 coef_s = array2ofns(res.x, n_coef+1, dim)
                 coef = coef_s[:-1]
+                self.sig2 = coef_s[-1]
             else:
                 raise ValueError('wrong method')
-
             self.coef = OFSeries(coef)
         elif solver == 'CL-BFGS-B':
             if options == {}:
@@ -142,7 +142,6 @@ def fun_obj_ols_c(p, n_coef, dim, ofns, intercept):
 
 
 def fun_obj_cmle(p, order, n_coef, dim, ofns, intercept):
-
     pp = p[:-2*dim]
     ps = p[-2*dim:]
     n_cans = int(len(ofns) / (2 * dim))
@@ -169,5 +168,9 @@ def fun_obj_cmle(p, order, n_coef, dim, ofns, intercept):
     return e, grad
 
 
-def fun_obj_cmle_c():
-    pass
+def fun_obj_cmle_c(p, n_coef, dim, ofns, intercept):
+    if intercept:
+        res = obj_func_ar_cml(p, ofns, n_coef, dim * 2, 1)
+    else:
+        res = obj_func_ar_cml(p, ofns, n_coef, dim * 2, 0)
+    return res[0], np.array(res[1])

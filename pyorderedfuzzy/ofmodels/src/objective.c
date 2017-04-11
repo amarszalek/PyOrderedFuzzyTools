@@ -93,3 +93,71 @@ double obj_func_ar_ls(double *p, int np, double *cans, int nc, int n_coef, int d
     free(ar);
     return error;
 }
+
+
+double obj_func_ar_cml(double *p, int np, double *cans, int nc, int n_coef, int dim2, int intercept, double *grad, int ng)
+{
+    int i, j, k, order, n_cans;
+    double error, r, ps;
+    double *ar;
+
+    for(j=0;j<ng;j++) grad[j]=0.0;
+
+    n_cans = (int)(nc/dim2);
+    ar=(double*)malloc(dim2*sizeof(double));
+    order = n_coef;
+    if(intercept == 1) order = n_coef - 1;
+
+    error = 0.0;
+    for(i=0;i<dim2;i++)
+    {
+        error += 0.5*(n_cans-order)*log(p[n_coef*dim2+i]);
+        grad[n_coef*dim2+i] = (n_cans-order)/p[n_coef*dim2+i];
+    }
+
+    if(intercept == 1)
+    {
+        for(i=order; i<n_cans; i++)
+        {
+            ar_bias(p, cans, order, dim2, i*dim2, ar);
+            for(j=0;j<dim2;j++)
+            {
+                ps = p[n_coef*dim2+j];
+                r = cans[i*dim2+j]-ar[j];
+                error += (r*r)/(2.0*ps*ps);
+                grad[n_coef*dim2+j] -= (r*r)/(ps*ps*ps);
+                for(k=0; k<n_coef; k++)
+                {
+                    if(k==0)
+                    {
+                        grad[k*dim2+j] -= r/(ps*ps);
+                    }
+                    else
+                    {
+                        grad[k*dim2+j] -= (r/(ps*ps))*cans[(i-k)*dim2+j];
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        for(i=order; i<n_cans; i++)
+        {
+            ar_unbias(p, cans, order, dim2, i*dim2, ar);
+            for(j=0;j<dim2;j++)
+            {
+                ps = p[n_coef*dim2+j];
+                r = cans[i*dim2+j]-ar[j];
+                error += (r*r)/(2.0*ps*ps);
+                grad[n_coef*dim2+j] -= (r*r)/(ps*ps*ps);
+                for(k=0; k<n_coef; k++)
+                {
+                    grad[k*dim2+j] -= (r/(ps*ps))*cans[(i-k-1)*dim2+j];
+                }
+            }
+        }
+    }
+    free(ar);
+    return error;
+}

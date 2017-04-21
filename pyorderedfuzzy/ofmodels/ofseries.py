@@ -133,8 +133,8 @@ class OFSeries(list):
                 ax.fill_betweenx(fg_y, i+shift-0.25, fg_x, facecolor='white', edgecolor='black')
             else:
                 ax.fill_betweenx(fg_y, i+shift-0.25, fg_x, facecolor=color, edgecolor='black')
-            #ax.plot([i+shift-0.25, i+shift-0.25], [np.min(fg_y), np.max(fg_y)], c='w', lw=2)
-            #ax.plot([i+shift-0.25, i+shift-0.25], [f.fvalue_y[0], g.fvalue_y[0]], c='black')
+            ax.plot([i+shift-0.25, i+shift-0.25], [np.min(fg_y), np.max(fg_y)], c='w')
+            ax.plot([i+shift-0.25, i+shift-0.25], [f.fvalue_y[0], g.fvalue_y[0]], c='black')
         ax.set_xlim(-1+shift, n+shift)
 
     def histogram(self, level='f_0', bins=10, normed=False, s=0, e=None, **kwargs):
